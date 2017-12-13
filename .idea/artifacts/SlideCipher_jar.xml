@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SlideCipher:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SlideCipher_jar</output-path>
+    <root id="archive" name="SlideCipher.jar">
+      <element id="module-output" name="SlideCipher" />
+    </root>
+  </artifact>
+</component>
