@@ -4,12 +4,12 @@ import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 public class FX extends Application {
@@ -35,6 +36,7 @@ public class FX extends Application {
     private TextField txtCipher;
     private RadioButton rdoDark;
     private RadioButton rdoLight;
+    private List<HistoryItem> history = new ArrayList<>();
     private Preferences prefs;
 
     public static void main(String[] args) {
@@ -274,16 +276,18 @@ public class FX extends Application {
             sb.append(c);
         }
         String cipherEnd = sb.toString();
+        history.add(new HistoryItem(string, cipherEnd));
         txtResult.setText(cipherEnd);
         txtDecipher.setText("");
         txtResult.requestFocus();
         txtResult.selectRange(0, 0);
+        System.out.println(history.get(history.size() - 1));
     }
 
     private void cipherOnClick() {
         String string = txtCipher.getText();
         char[] chars = string.toCharArray();
-        ArrayList<Character> cipherFinal = new ArrayList<Character>();
+        ArrayList<Character> cipherFinal = new ArrayList<>();
 
         for (char c : chars) {
             int ascii = (int) c;
@@ -314,10 +318,12 @@ public class FX extends Application {
             sb.append(c);
         }
         String cipherEnd = sb.toString();
+        history.add(new HistoryItem(string, cipherEnd));
         txtResult.setText(cipherEnd);
         txtCipher.setText("");
         txtResult.requestFocus();
         txtResult.selectRange(0, 0);
+        System.out.println(history.get(history.size() - 1));
     }
 
 
