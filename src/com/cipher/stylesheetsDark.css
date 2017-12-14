@@ -97,5 +97,29 @@
 
 .radio-button:selected .dot {
     -fx-background-color: #55B955;
+}
 
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-width: 1px;
+    -fx-border-color: #DCDCDC;
+    -fx-background-radius: 16px;
+    -fx-border-radius: 16px;
+}
+
+
+.table-view .column-header-background{
+    -fx-background-color: transparent;
+    -fx-border-width: 0 0 1px  0;
+    -fx-border-color: #DCDCDC;
+
+}
+
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: #55B955;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
 }

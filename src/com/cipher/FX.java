@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 public class FX extends Application {
+    private TableView<HistoryItem> tblHistory;
     private Button btnCipher;
     private Button btnDecipher;
     private Button apply;
@@ -96,6 +97,19 @@ public class FX extends Application {
         txtResult.setMaxWidth(300);
         txtResult.setPrefWidth(200);
 
+        // Creates History Table
+        tblHistory = new TableView<>();
+        TableColumn input = new TableColumn("Input");
+        TableColumn result = new TableColumn("Result");
+
+        input.prefWidthProperty().bind(tblHistory.widthProperty().multiply(0.5));
+        result.prefWidthProperty().bind(tblHistory.widthProperty().multiply(0.5));
+
+        input.setResizable(false);
+        result.setResizable(false);
+
+        tblHistory.getColumns().addAll(input, result);
+
         // Creates pane
         GridPane pane = new GridPane();
         pane.setVgap(10);
@@ -106,6 +120,7 @@ public class FX extends Application {
         pane.add(btnCipher, 3, 0);
         pane.add(btnDecipher, 3, 1);
         pane.addRow(2, lblResult, txtResult);
+        pane.addRow(3, tblHistory);
 
         GridPane.setHalignment(lblCipher, HPos.RIGHT);
         GridPane.setHalignment(lblDecipher, HPos.RIGHT);
@@ -115,6 +130,7 @@ public class FX extends Application {
         GridPane.setColumnSpan(txtCipher, 2);
         GridPane.setColumnSpan(txtDecipher, 2);
         GridPane.setColumnSpan(txtResult, 2);
+        GridPane.setColumnSpan(tblHistory, 4);
 
 
         ColumnConstraints col0 = new ColumnConstraints();
@@ -190,7 +206,7 @@ public class FX extends Application {
         primaryStage.getIcons().add(new Image(FX.class.getResourceAsStream("Logo2.0.png")));
         primaryStage.setTitle("SLIDE");
         primaryStage.setMinWidth(610);
-        primaryStage.setMaxWidth(800);
+        primaryStage.setMaxWidth(610);
         primaryStage.setMaxHeight(500);
         primaryStage.centerOnScreen();
         primaryStage.setResizable(false);
@@ -281,7 +297,6 @@ public class FX extends Application {
         txtDecipher.setText("");
         txtResult.requestFocus();
         txtResult.selectRange(0, 0);
-        System.out.println(history.get(history.size() - 1));
     }
 
     private void cipherOnClick() {
