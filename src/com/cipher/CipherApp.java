@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -25,15 +26,19 @@ import java.util.prefs.Preferences;
 
 public class CipherApp extends Application {
     private TableView<HistoryItem> tblHistory;
+    private Button btnLogin;
     private Button btnCipher;
     private Button btnDecipher;
     private Button apply;
     private Label lblCipher;
     private Label lblResult;
     private Label lblDecipher;
+    private Scene loginScene;
     private Scene scene;
     private Scene preferencesScene;
     private Stage stage;
+    private TextField txtUsername;
+    private TextField txtPassword;
     private TextField txtDecipher;
     private TextField txtResult;
     private TextField txtCipher;
@@ -170,8 +175,8 @@ public class CipherApp extends Application {
         menuBar.getMenus().addAll(menuSlide, menuFile);
 
         final String os = System.getProperty("os.name");
-        //if (os != null && os.startsWith("Mac"))
-        //    menuBar.useSystemMenuBarProperty().set(true);
+        if (os != null && os.startsWith("Mac"))
+            menuBar.useSystemMenuBarProperty().set(true);
 
         BorderPane borderPane = new BorderPane(pane);
         borderPane.setTop(menuBar);
@@ -191,6 +196,36 @@ public class CipherApp extends Application {
         Pane preferencesPane = new Pane(scheme);
         preferencesScene = new Scene(preferencesPane);
 
+        // initialize variables for login screen
+        btnLogin = new Button("Login");
+        btnLogin.getStyleClass().add("primary-button");
+        btnLogin.setOnAction(e -> loginOnClick());
+
+        txtUsername = new TextField();
+        txtUsername.setPromptText("Username");
+        txtUsername.setOnAction(e -> loginOnClick());
+
+        txtPassword = new PasswordField();
+        txtPassword.setPromptText("Password");
+        txtPassword.setOnAction(e -> loginOnClick());
+
+        //create login screen
+        GridPane loginPane = new GridPane();
+        loginPane.setVgap(10);
+        loginPane.setHgap(10);
+        loginPane.addRow(0, new Label("Login"));
+        loginPane.addRow(1, txtUsername);
+        loginPane.addRow(2, txtPassword);
+        loginPane.addRow(3, btnLogin);
+        loginPane.setPadding(new Insets(16));
+
+        GridPane.setColumnSpan(txtUsername, 2);
+        GridPane.setColumnSpan(txtPassword, 2);
+        GridPane.setColumnSpan(btnLogin, 2);
+        GridPane.setHalignment(btnLogin, HPos.CENTER);
+
+        loginScene = new Scene(loginPane);
+
         //Sets stage and scenes
         stage = primaryStage;
 
@@ -204,7 +239,7 @@ public class CipherApp extends Application {
             toDark();
         }
 
-        primaryStage.setScene(scene);
+        primaryStage.setScene(loginScene);
         primaryStage.getIcons().add(new Image(CipherApp.class.getResourceAsStream("Logo2.0.png")));
         primaryStage.setTitle("SLIDE");
         primaryStage.setMaxWidth(610);
@@ -216,6 +251,15 @@ public class CipherApp extends Application {
             exitOnClick();
         });
         primaryStage.show();
+    }
+
+    private void loginOnClick() {
+        String user = txtUsername.getText();
+        String pass = txtPassword.getText();
+        if (user.equals("admin") && pass.equals("admin")) {
+            stage.setScene(scene);
+        }
+        stage.centerOnScreen();
     }
 
     private void newWindowOnClick() {
@@ -233,16 +277,20 @@ public class CipherApp extends Application {
         prefs.put("THEME", "dark");
         scene.getStylesheets().clear();
         preferencesScene.getStylesheets().clear();
+        loginScene.getStylesheets().clear();
         preferencesScene.getStylesheets().add(CipherApp.class.getResource("stylesheetsDark.css").toExternalForm());
         scene.getStylesheets().add(CipherApp.class.getResource("stylesheetsDark.css").toExternalForm());
+        loginScene.getStylesheets().add(CipherApp.class.getResource("stylesheetsDark.css").toExternalForm());
     }
 
     private void toLight() {
         prefs.put("THEME", "light");
         scene.getStylesheets().clear();
         preferencesScene.getStylesheets().clear();
+        loginScene.getStylesheets().clear();
         preferencesScene.getStylesheets().add(CipherApp.class.getResource("stylesheetsLight.css").toExternalForm());
         scene.getStylesheets().add(CipherApp.class.getResource("stylesheetsLight.css").toExternalForm());
+        loginScene.getStylesheets().add(CipherApp.class.getResource("stylesheetsLight.css").toExternalForm());
     }
 
     private void returnOnClick() {
@@ -253,6 +301,7 @@ public class CipherApp extends Application {
             toLight();
         }
         stage.setScene(scene);
+        stage.centerOnScreen();
     }
 
     private void quitOnClick() {
