@@ -1,16 +1,19 @@
 package com.cipher;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -18,10 +21,9 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.prefs.Preferences;
 
-public class FX extends Application {
+public class CipherApp extends Application {
     private TableView<HistoryItem> tblHistory;
     private Button btnCipher;
     private Button btnDecipher;
@@ -37,8 +39,10 @@ public class FX extends Application {
     private TextField txtCipher;
     private RadioButton rdoDark;
     private RadioButton rdoLight;
-    private List<HistoryItem> history = new ArrayList<>();
+    //private List<HistoryItem> history = new ArrayList<>();
+    private ObservableList<HistoryItem> history = FXCollections.observableArrayList();
     private Preferences prefs;
+
 
     public static void main(String[] args) {
         System.out.println("Starting Program...");
@@ -50,7 +54,7 @@ public class FX extends Application {
     public void start(Stage primaryStage) {
         // Added Taskbar Icon
         try {
-            java.awt.Image dockIconImg = Toolkit.getDefaultToolkit().getImage(FX.class.getResource("Logo2.0.png"));
+            java.awt.Image dockIconImg = Toolkit.getDefaultToolkit().getImage(CipherApp.class.getResource("Logo2.0.png"));
             Taskbar taskbar = Taskbar.getTaskbar();
             taskbar.setIconImage(dockIconImg);
         } catch (Exception e) {
@@ -97,18 +101,16 @@ public class FX extends Application {
         txtResult.setMaxWidth(300);
         txtResult.setPrefWidth(200);
 
+        TableColumn<HistoryItem, String> inputColumn = new TableColumn<>("Input");
+        TableColumn<HistoryItem, String> resultColumn = new TableColumn<>("Result");
+
+        inputColumn.setCellValueFactory(new PropertyValueFactory<>("input"));
+        resultColumn.setCellValueFactory(new PropertyValueFactory<>("result"));
+
         // Creates History Table
-        tblHistory = new TableView<>();
-        TableColumn input = new TableColumn("Input");
-        TableColumn result = new TableColumn("Result");
-
-        input.prefWidthProperty().bind(tblHistory.widthProperty().multiply(0.5));
-        result.prefWidthProperty().bind(tblHistory.widthProperty().multiply(0.5));
-
-        input.setResizable(false);
-        result.setResizable(false);
-
-        tblHistory.getColumns().addAll(input, result);
+        tblHistory = new TableView<>(history);
+        tblHistory.getColumns().addAll(inputColumn, resultColumn);
+        tblHistory.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Creates pane
         GridPane pane = new GridPane();
@@ -203,9 +205,8 @@ public class FX extends Application {
         }
 
         primaryStage.setScene(scene);
-        primaryStage.getIcons().add(new Image(FX.class.getResourceAsStream("Logo2.0.png")));
+        primaryStage.getIcons().add(new Image(CipherApp.class.getResourceAsStream("Logo2.0.png")));
         primaryStage.setTitle("SLIDE");
-        primaryStage.setMinWidth(610);
         primaryStage.setMaxWidth(610);
         primaryStage.setMaxHeight(500);
         primaryStage.centerOnScreen();
@@ -218,6 +219,7 @@ public class FX extends Application {
     }
 
     private void newWindowOnClick() {
+
     }
 
     private void preferencesOnClick() {
@@ -231,16 +233,16 @@ public class FX extends Application {
         prefs.put("THEME", "dark");
         scene.getStylesheets().clear();
         preferencesScene.getStylesheets().clear();
-        preferencesScene.getStylesheets().add(FX.class.getResource("stylesheetsDark.css").toExternalForm());
-        scene.getStylesheets().add(FX.class.getResource("stylesheetsDark.css").toExternalForm());
+        preferencesScene.getStylesheets().add(CipherApp.class.getResource("stylesheetsDark.css").toExternalForm());
+        scene.getStylesheets().add(CipherApp.class.getResource("stylesheetsDark.css").toExternalForm());
     }
 
     private void toLight() {
         prefs.put("THEME", "light");
         scene.getStylesheets().clear();
         preferencesScene.getStylesheets().clear();
-        preferencesScene.getStylesheets().add(FX.class.getResource("stylesheetsLight.css").toExternalForm());
-        scene.getStylesheets().add(FX.class.getResource("stylesheetsLight.css").toExternalForm());
+        preferencesScene.getStylesheets().add(CipherApp.class.getResource("stylesheetsLight.css").toExternalForm());
+        scene.getStylesheets().add(CipherApp.class.getResource("stylesheetsLight.css").toExternalForm());
     }
 
     private void returnOnClick() {
@@ -297,6 +299,7 @@ public class FX extends Application {
         txtDecipher.setText("");
         txtResult.requestFocus();
         txtResult.selectRange(0, 0);
+        tblHistory.setItems(history);
     }
 
     private void cipherOnClick() {
@@ -338,7 +341,7 @@ public class FX extends Application {
         txtCipher.setText("");
         txtResult.requestFocus();
         txtResult.selectRange(0, 0);
-        System.out.println(history.get(history.size() - 1));
+        tblHistory.setItems(history);
     }
 
 

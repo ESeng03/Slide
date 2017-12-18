@@ -107,6 +107,9 @@
     -fx-border-radius: 16px;
 }
 
+.table-cell {
+    -fx-border-width: 0;
+}
 
 .table-view .column-header-background{
     -fx-background-color: transparent;
@@ -122,4 +125,18 @@
 
 .table-view .column-header {
     -fx-background-color: transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: transparent;
+}
+
+.table-view .cell {
+    -fx-text-fill: #DCDCDC;
+    -fx-alignment: center;
+}
+
+.table-view .cell .label {
+    -fx-margin: 8px;
+
 }

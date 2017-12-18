@@ -1,32 +1,43 @@
 package com.cipher;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class HistoryItem {
-    private String input;
-    private String result;
+    private StringProperty input;
+    private StringProperty result;
 
     public HistoryItem(String input, String result) {
-        this.input = input;
-        this.result = result;
+        this.input = new SimpleStringProperty(input);
+        this.result = new SimpleStringProperty(result);
     }
 
-    public String getInput() {
+    public StringProperty inputProperty() {
         return input;
     }
 
-    public String getResult() {
+    public StringProperty resultProperty() {
         return result;
     }
 
-    public void setInput(String input) {
-        this.input = input;
+    public final String getInput() {
+        return input.get();
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public final String getResult() {
+        return input.get();
+    }
+
+    public final void setInput(String input) {
+        this.input.set(input);
+    }
+
+    public final void setResult(String result) {
+        this.input.set(result);
     }
 
     @Override
     public String toString() {
-        return input + " | " + result;
+        return input.get() + " | " + result.get();
     }
 }
