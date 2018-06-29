@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -24,6 +23,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
+@SuppressWarnings("ALL")
 public class CipherApp extends Application {
     private TableView<HistoryItem> tblHistory;
     private Button btnLogin;
@@ -44,7 +44,6 @@ public class CipherApp extends Application {
     private TextField txtCipher;
     private RadioButton rdoDark;
     private RadioButton rdoLight;
-    //private List<HistoryItem> history = new ArrayList<>();
     private ObservableList<HistoryItem> history = FXCollections.observableArrayList();
     private Preferences prefs;
 
@@ -59,7 +58,7 @@ public class CipherApp extends Application {
     public void start(Stage primaryStage) {
         // Added Taskbar Icon
         try {
-            java.awt.Image dockIconImg = Toolkit.getDefaultToolkit().getImage(CipherApp.class.getResource("Logo2.0.png"));
+            java.awt.Image dockIconImg = Toolkit.getDefaultToolkit().getImage(CipherApp.class.getResource("Logo.png"));
             Taskbar taskbar = Taskbar.getTaskbar();
             taskbar.setIconImage(dockIconImg);
         } catch (Exception e) {
@@ -75,9 +74,7 @@ public class CipherApp extends Application {
         btnCipher.getStyleClass().add("primary-button");
         btnCipher.setPrefWidth(120);
         txtCipher = new TextField();
-        txtCipher.setOnAction(e -> {
-            cipherOnClick();
-        });
+        txtCipher.setOnAction(e -> cipherOnClick());
         txtCipher.setPromptText("Enter a phrase to cipher");
         txtCipher.setMinWidth(100);
         txtCipher.setMaxWidth(300);
@@ -89,9 +86,7 @@ public class CipherApp extends Application {
         btnDecipher.setOnAction(e -> decipherOnClick());
         btnDecipher.setPrefWidth(120);
         txtDecipher = new TextField();
-        txtDecipher.setOnAction(e -> {
-            decipherOnClick();
-        });
+        txtDecipher.setOnAction(e -> decipherOnClick());
         txtDecipher.setPromptText("Enter a phrase to Decipher");
         txtDecipher.setMinWidth(100);
         txtDecipher.setMaxWidth(300);
@@ -175,8 +170,8 @@ public class CipherApp extends Application {
         menuBar.getMenus().addAll(menuSlide, menuFile);
 
         final String os = System.getProperty("os.name");
-        if (os != null && os.startsWith("Mac"))
-            menuBar.useSystemMenuBarProperty().set(true);
+        //if (os != null && os.startsWith("Mac"))
+        //    menuBar.useSystemMenuBarProperty().set(true);
 
         BorderPane borderPane = new BorderPane(pane);
         borderPane.setTop(menuBar);
@@ -235,12 +230,13 @@ public class CipherApp extends Application {
         String themePref = prefs.get("THEME", "dark");
         if (themePref.equals("light")) {
             toLight();
-        } else {
+        }
+        else {
             toDark();
         }
 
         primaryStage.setScene(loginScene);
-        primaryStage.getIcons().add(new Image(CipherApp.class.getResourceAsStream("Logo2.0.png")));
+        primaryStage.getIcons().add(new Image(CipherApp.class.getResourceAsStream("Logo.png")));
         primaryStage.setTitle("SLIDE");
         primaryStage.setMaxWidth(610);
         primaryStage.setMaxHeight(500);
@@ -293,6 +289,7 @@ public class CipherApp extends Application {
         loginScene.getStylesheets().add(CipherApp.class.getResource("stylesheetsLight.css").toExternalForm());
     }
 
+
     private void returnOnClick() {
         if (rdoDark.isSelected()) {
             toDark();
@@ -300,6 +297,7 @@ public class CipherApp extends Application {
         if (rdoLight.isSelected()) {
             toLight();
         }
+
         stage.setScene(scene);
         stage.centerOnScreen();
     }
@@ -308,67 +306,50 @@ public class CipherApp extends Application {
         stage.close();
     }
 
-    private void decipherOnClick() {
-        String string = txtDecipher.getText();
-        char[] chars = string.toCharArray();
-        ArrayList<Character> cipherFinal = new ArrayList<>();
-        cipherFinal.clear();
-
-        for (char c : chars) {
-            int ascii = (int) c;
-            if (ascii >= 97 && ascii <= 122) {
-                ascii -= 4;
-                if (ascii < 97) {
-                    ascii = ascii + 26;
-                }
-                char l = (char) ascii;
-                cipherFinal.add(l);
-            }
-            if (65 <= ascii && ascii <= 90) {
-                ascii -= 4;
-                if (ascii < 65) {
-                    ascii = ascii + 26;
-                }
-                char l = (char) ascii;
-                cipherFinal.add(l);
-            }
-            if (ascii == 32) {
-                char l = (char) ascii;
-                cipherFinal.add(l);
-            }
-
-        }
-        StringBuilder sb = new StringBuilder();
-        for (char c : cipherFinal) {
-            sb.append(c);
-        }
-        String cipherEnd = sb.toString();
-        history.add(new HistoryItem(string, cipherEnd));
-        txtResult.setText(cipherEnd);
-        txtDecipher.setText("");
-        txtResult.requestFocus();
-        txtResult.selectRange(0, 0);
-        tblHistory.setItems(history);
-    }
-
     private void cipherOnClick() {
+        int shift = 0;
+        int i = 0;
+        int k = 3;
+
         String string = txtCipher.getText();
         char[] chars = string.toCharArray();
+        char[] chars2 = new char[chars.length];
+        for (int j = chars.length - 1; j > -1; j--) {
+            if (k >= chars.length){
+                k -= chars.length;
+            }
+            chars2[k] = chars[j];
+            k++;
+        }
         ArrayList<Character> cipherFinal = new ArrayList<>();
+        cipherFinal.clear();
+        for (char c : chars2) {
+            int rem = (i + chars2.length) % 4;
+            if (rem == 0){
+                shift = 7;
+            }
+            if (rem == 1){
+                shift = 13;
+            }
+            if (rem == 2){
+                shift = 18;
+            }
+            if (rem == 3){
+                shift = 23;
+            }
 
-        for (char c : chars) {
             int ascii = (int) c;
             if (ascii >= 97 && ascii <= 122) {
-                ascii += 4;
-                if (ascii > 122) {
+                ascii += shift;
+                while (ascii > 122) {
                     ascii = ascii - 26;
                 }
                 char l = (char) ascii;
                 cipherFinal.add(l);
             }
             if (65 <= ascii && ascii <= 90) {
-                ascii += 4;
-                if (ascii > 90) {
+                ascii += shift;
+                while (ascii > 90) {
                     ascii = ascii - 26;
                 }
                 char l = (char) ascii;
@@ -378,8 +359,9 @@ public class CipherApp extends Application {
                 char l = (char) ascii;
                 cipherFinal.add(l);
             }
-
+            i++;
         }
+
         StringBuilder sb = new StringBuilder();
         for (char c : cipherFinal) {
             sb.append(c);
@@ -388,6 +370,77 @@ public class CipherApp extends Application {
         history.add(new HistoryItem(string, cipherEnd));
         txtResult.setText(cipherEnd);
         txtCipher.setText("");
+        txtResult.requestFocus();
+        txtResult.selectRange(0, 0);
+        tblHistory.setItems(history);
+    }
+
+    private void decipherOnClick() {
+        int shift = 0;
+        int i = 0;
+        int k = 3;
+
+        String string = txtDecipher.getText();
+        char[] chars = string.toCharArray();
+        char[] chars2 = new char[chars.length];
+        ArrayList<Character> cipherFinal = new ArrayList<>();
+        cipherFinal.clear();
+
+        for (char c : chars) {
+            int rem = (i + chars.length) % 4;
+            if (rem == 0){
+                shift = 7;
+            }
+            if (rem == 1){
+                shift = 13;
+            }
+            if (rem == 2){
+                shift = 18;
+            }
+            if (rem == 3){
+                shift = 23;
+            }
+            int ascii = (int) c;
+            if (ascii >= 97 && ascii <= 122) {
+                ascii -= shift;
+                while (ascii < 97) {
+                    ascii = ascii + 26;
+                }
+                char l = (char) ascii;
+                cipherFinal.add(l);
+            }
+            if (65 <= ascii && ascii <= 90) {
+                ascii -= shift;
+                while (ascii < 65) {
+                    ascii = ascii + 26;
+                }
+                char l = (char) ascii;
+                cipherFinal.add(l);
+            }
+            if (ascii == 32) {
+                char l = (char) ascii;
+                cipherFinal.add(l);
+            }
+            i++;
+        }
+        for (int j = chars.length - 1; j > -1; j--) {
+            if (k >= chars.length){
+                k -= chars.length;
+            }
+            chars2[k] = cipherFinal.get(j);
+            k++;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char c : chars2) {
+            sb.append(c);
+        }
+        String cipherEnd = sb.toString();
+        history.add(new HistoryItem(string, cipherEnd));
+        if (history.size() > 11){
+
+        }
+        txtResult.setText(cipherEnd);
+        txtDecipher.setText("");
         txtResult.requestFocus();
         txtResult.selectRange(0, 0);
         tblHistory.setItems(history);

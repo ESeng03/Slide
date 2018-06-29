@@ -75,9 +75,6 @@
     -fx-border-color: #55B955;
 }
 
-.radio-button {
-    -fx-text-fill: #DCDCDC;
-}
 
 .radio-button .radio {
     -fx-border-radius: 100%;
