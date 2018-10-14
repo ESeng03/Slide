@@ -1,2 +1,2 @@
 # Slide
-The Magical Slide Cipher Project
+A Java based Ciphering and Deciphering application
